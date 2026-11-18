@@ -1,0 +1,65 @@
+#include <stdio.h>
+#include <stdlib.h> 
+
+#define HALF_WEIGHT 40
+
+int call_count = 0;
+int current_depth = 0;
+int max_depth = 0;
+
+int get_weight(int row, int col, int flag) {
+    call_count++;
+    current_depth++;
+
+    if (current_depth > max_depth) max_depth = current_depth;
+
+    if (row == 0) {
+        if (flag == 1) {
+            printf("Intermediate weight for (0, 0) = 0\n");
+        }
+        current_depth--;
+        return 0;
+    }
+
+    int weight = 0;
+
+    if (col - 1 >= 0) weight += (get_weight(row - 1, col - 1, flag) / 2) + HALF_WEIGHT;
+
+    if (row != col) weight += (get_weight(row - 1, col, flag) / 2) + HALF_WEIGHT;
+
+    if (flag == 1) {
+        printf("Intermediate weight for (%d, %d) = %d\n", row, col, weight);
+    }
+
+    current_depth--;
+    return weight;
+}
+
+int main(int argc, char* argv[]) {
+    if (argc != 5) {
+        printf("ERROR\n");
+        return 1;
+    }
+
+    int row = atoi(argv[1]);
+    int col = atoi(argv[2]);
+    int height = atoi(argv[3]);
+    int flag = atoi(argv[4]);
+
+    if ((height > 0) && (row >= 0) && (col >= 0) && (row < height) && (col <= row) && ((flag == 0) || (flag == 1))) {
+
+        int result = get_weight(row, col, flag);
+        printf("RESULT: %d\n", result);
+
+        if (flag == 1) {
+            printf("Max depth: %d\n", max_depth);
+            printf("Calls: %d\n", call_count);
+        }
+    }
+    else {
+        printf("ERROR\n");
+        return 1;
+    }
+
+    return 0;
+}
