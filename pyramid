@@ -2,12 +2,17 @@
 #include <stdlib.h> 
 
 #define HALF_WEIGHT 40
+#define MAX_SIZE 100
+int memo[MAX_SIZE][MAX_SIZE];
 
 int call_count = 0;
 int current_depth = 0;
 int max_depth = 0;
 
 int get_weight(int row, int col, int flag) {
+
+    if (memo[row][col] != -1) return memo[row][col];
+
     call_count++;
     current_depth++;
 
@@ -17,6 +22,7 @@ int get_weight(int row, int col, int flag) {
         if (flag == 1) {
             printf("Intermediate weight for (0, 0) = 0\n");
         }
+        memo[row][col] = 0;
         current_depth--;
         return 0;
     }
@@ -31,6 +37,7 @@ int get_weight(int row, int col, int flag) {
         printf("Intermediate weight for (%d, %d) = %d\n", row, col, weight);
     }
 
+    memo[row][col] = weight;
     current_depth--;
     return weight;
 }
@@ -46,7 +53,14 @@ int main(int argc, char* argv[]) {
     int height = atoi(argv[3]);
     int flag = atoi(argv[4]);
 
-    if ((height > 0) && (row >= 0) && (col >= 0) && (row < height) && (col <= row) && ((flag == 0) || (flag == 1))) {
+    if ((height > 0) && (row >= 0) && (col >= 0) && (row < height) && (col <= row) && ((flag == 0) || (flag == 1))
+    && (height < MAX_SIZE)) {
+
+        for (int i = 0; i < MAX_SIZE; i++) {
+            for (int j = 0; j < MAX_SIZE; j++) {
+                memo[i][j] = -1;
+            }
+        }
 
         int result = get_weight(row, col, flag);
         printf("RESULT: %d\n", result);
