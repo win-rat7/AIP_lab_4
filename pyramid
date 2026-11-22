@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h> 
+#include <windows.h>
 
 #define HALF_WEIGHT 40
 #define MAX_SIZE 100
@@ -8,6 +9,8 @@ int memo[MAX_SIZE][MAX_SIZE];
 int call_count = 0;
 int current_depth = 0;
 int max_depth = 0;
+
+LARGE_INTEGER freq, START, END;
 
 int get_weight(int row, int col, int flag) {
 
@@ -53,6 +56,8 @@ int main(int argc, char* argv[]) {
     int height = atoi(argv[3]);
     int flag = atoi(argv[4]);
 
+    QueryPerformanceFrequency(&freq);
+
     if ((height > 0) && (row >= 0) && (col >= 0) && (row < height) && (col <= row) && ((flag == 0) || (flag == 1))
     && (height < MAX_SIZE)) {
 
@@ -62,7 +67,15 @@ int main(int argc, char* argv[]) {
             }
         }
 
+        QueryPerformanceCounter(&START);
+
         int result = get_weight(row, col, flag);
+
+        QueryPerformanceCounter(&END);
+
+        double seconds = (double)(END.QuadPart - START.QuadPart) / (double)freq.QuadPart;
+
+        printf("Time: %f\n", seconds);
         printf("RESULT: %d\n", result);
 
         if (flag == 1) {
