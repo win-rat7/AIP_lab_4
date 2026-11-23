@@ -9,6 +9,7 @@ int memo[MAX_SIZE][MAX_SIZE];
 int call_count = 0;
 int current_depth = 0;
 int max_depth = 0;
+int memo_used = 0;
 
 LARGE_INTEGER freq, START, END;
 
@@ -26,6 +27,7 @@ int get_weight(int row, int col, int flag) {
             printf("Intermediate weight for (0, 0) = 0\n");
         }
         memo[row][col] = 0;
+        memo_used++;
         current_depth--;
         return 0;
     }
@@ -41,6 +43,7 @@ int get_weight(int row, int col, int flag) {
     }
 
     memo[row][col] = weight;
+    memo_used++;
     current_depth--;
     return weight;
 }
@@ -77,6 +80,8 @@ int main(int argc, char* argv[]) {
 
         printf("Time: %f\n", seconds);
         printf("RESULT: %d\n", result);
+        printf("Memory cells used: %d\n", memo_used);
+        printf("Memory used: %d bytes\n", memo_used * (int)(sizeof(int)));
 
         if (flag == 1) {
             printf("Max depth: %d\n", max_depth);
